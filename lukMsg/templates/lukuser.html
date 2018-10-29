@@ -1,0 +1,39 @@
+{% extends 'starter.html' %}
+{% block link2 %}
+<li class="active"><a href="/lukServer/lukuser"><i class="fa fa-user"></i> <span>矿机用户</span></a></li>
+{% endblock %}
+{% block content %}
+    <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title">矿池用户名称</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table class="table table-bordered">
+                <tbody><tr>
+                  <th style="width: 10px">ID</th>
+                  <th>用户名称</th>
+                </tr>
+                <tr>
+                  <td style="width: 10px">1</td>
+                  <td>Update software0000000000000000000000</td>
+                </tr>
+                <tr>
+                  <td style="width: 10px">2</td>
+                  <td>Clean database00000000000000000000000000000</td>
+                </tr>
+              </tbody>
+              </table>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+              <ul class="pagination pagination-sm no-margin pull-right">
+                <li class="disabled"><a href="#">«</a></li>
+                <li><a href="#">1</a></li>
+                <li class="disabled"><a href="#">»</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+{% endblock %}

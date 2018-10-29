@@ -1,0 +1,17 @@
+{% extends 'starter.html' %}
+{% block treeview %}
+    <li class="active treeview menu-open">
+        <a href="#"><i class="fa fa-calendar"></i> <span>矿机管理</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="/lukServer/lukservice"><i class="fa fa-calendar-check-o"></i>程序监控</a></li>
+            <li class="active"><a href="/lukServer/luksensor"><i class="fa fa-calendar-check-o"></i>温度监控</a></li>
+        </ul>
+    </li>
+{% endblock treeview %}
+{% block content %}
+    222
+{% endblock %}
