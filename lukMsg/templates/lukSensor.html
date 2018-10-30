@@ -1,4 +1,5 @@
 {% extends 'starter.html' %}
+{% load static %}
 {% block treeview %}
     <li class="active treeview menu-open">
         <a href="#"><i class="fa fa-calendar"></i> <span>矿机管理</span>
@@ -13,5 +14,8 @@
     </li>
 {% endblock treeview %}
 {% block content %}
-    222
+    <table id="luk_sensor" class="table table-hover" width="95%" align="center" style=" word-break:break-all;"></table>
 {% endblock %}
+{% block script %}
+    <script src="{% static 'lukMsg/scripts/luksensor.js' %}"></script>
+{% endblock script %}
