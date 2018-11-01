@@ -38,10 +38,10 @@ var FileTableInit = function () {
             rowStyle: function (row, index) {
                 //这里有5个取值代表5中颜色['active', 'success', 'info', 'warning', 'danger'];
                 var strclass = "";
-                if (row.serverStat == "TRUE") {
+                if (row.serverStat == "True") {
                     strclass = 'success';//还有一个active
                 }
-                else if (row.serverStat == "FLASE") {
+                else if (row.serverStat == "Flase") {
                     strclass = 'warning';
                 }
                 else {
@@ -66,7 +66,8 @@ var FileTableInit = function () {
                 title: '机器状态'
             },{
                 field: 'mechineSensor',
-                title: '机器温度'
+                title: '机器温度',
+                visible: false
             },{
                 field: 'ipAddr',
                 title: 'IP地址'
@@ -90,3 +91,74 @@ var FileTableInit = function () {
     };
     return oFileTableInit;
 };
+
+function buttonexec() {
+    $("#reset_luk").click(function () {
+        var luk_info = $("#luk_service").val();
+        $.ajax({
+            type: "post",
+            url: "/lukServer/lukAddUser",
+            data: {"data": JSON.stringify({"user": luk_info, "state": "reset", "name": "luk"})},
+            success: function (data, status) {
+                toastr.success('矿机重启成功');
+                $("#luk_service").bootstrapTable('refresh');
+            },
+            error: function (data, status) {
+                toastr.error('执行失败');
+                return false;
+            }
+
+        })
+    });
+    $("#off_luk").click(function () {
+        var luk_info = $("#luk_service").val();
+        $.ajax({
+            type: "post",
+            url: "/lukServer/lukAddUser",
+            data: {"data": JSON.stringify({"user": luk_info, "state": "off", "name": "luk"})},
+            success: function (data, status) {
+                toastr.success('矿机关闭成功');11
+                $("#luk_service").bootstrapTable('refresh');
+            },
+            error: function (data, status) {
+                toastr.error('执行失败');
+                return false;
+            }
+
+        })
+    });
+    $("#off_service").click(function () {
+        var luk_info = $("#luk_service").val();
+        $.ajax({
+            type: "post",
+            url: "/lukServer/lukAddUser",
+            data: {"data": JSON.stringify({"user": luk_info, "state": "off", "name": "service"})},
+            success: function (data, status) {
+                toastr.success('程序关闭成功');
+                $("#luk_service").bootstrapTable('refresh');
+            },
+            error: function (data, status) {
+                toastr.error('执行失败');
+                return false;
+            }
+
+        })
+    });
+    $("#reset_service").click(function () {
+        var luk_info = $("#luk_service").val();
+        $.ajax({
+            type: "post",
+            url: "/lukServer/lukAddUser",
+            data: {"data": JSON.stringify({"user": luk_info, "state": "reset", "name": "service"})},
+            success: function (data, status) {
+                toastr.success('程序重启成功');
+                $("#luk_service").bootstrapTable('refresh');
+            },
+            error: function (data, status) {
+                toastr.error('执行失败');
+                return false;
+            }
+
+        })
+    });
+}

@@ -7,52 +7,52 @@
         <!-- small box -->
         <div class="small-box bg-blue">
             <div class="inner">
-                <h3>44</h3>
+                <h3>{{ totalNum }}</h3>
                 <p>矿机总数量</p>
             </div>
             <div class="icon">
                 <i class="ion ion-person-stalker"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="/lukServer/lukservice" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
         <div class="col-lg-5 col-xs-8">
         <!-- small box -->
         <div class="small-box bg-green">
             <div class="inner">
-                <h3>44</h3>
+                <h3>{{ runNum }}</h3>
                 <p>运行矿机数量</p>
             </div>
             <div class="icon">
                 <i class="ion ion-person"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="/lukServer/lukservice?name=mechineStat&state=True" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <div class="col-lg-5 col-xs-8">
         <!-- small box -->
         <div class="small-box bg-yellow-active">
             <div class="inner">
-                <h3>0</h3>
+                <h3>{{ stopNum }}</h3>
                 <p>程序停止数量</p>
             </div>
             <div class="icon">
                 <i class="ion ion-stop"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="/lukServer/lukservice?name=serverStat&state=Flase" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <div class="col-lg-5 col-xs-8">
         <!-- small box -->
         <div class="small-box bg-red-active">
             <div class="inner">
-                <h3>0</h3>
+                <h3>{{ offNum }}</h3>
                 <p>矿机停止数量</p>
             </div>
             <div class="icon">
                 <i class="ion ion-locked"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="/lukServer/lukservice?name=mechineStat&state=Flase" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
 {% endblock %}

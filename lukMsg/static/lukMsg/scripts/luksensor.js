@@ -9,7 +9,7 @@ var FileTableInit = function () {
     //初始化Table
     oFileTableInit.Init = function () {
         $('#luk_sensor').bootstrapTable({
-            url: '/lukServer/lukServerMsg',         //请求后台的URL（*）
+            url: '/lukServer/lukServiceMsg',         //请求后台的URL（*）
             method: 'get',    //请求方式（*）
             toolbar: '#toolbar',                //工具按钮用哪个容器
             striped: true,                      //是否显示行间隔色
@@ -21,7 +21,7 @@ var FileTableInit = function () {
             sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
             pageNumber: 1,                       //初始化加载第一页，默认第一页
             pageSize: 10,                       //每页的记录行数（*）
-            pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+            pageList: [10, 25, 50, 100, 200],        //可供选择的每页的行数（*）
             search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
             showExport: true,
             exportDataType: "basic",
@@ -35,19 +35,54 @@ var FileTableInit = function () {
             // showToggle: true,                    //是否显示详细视图和列表视图的切换按钮
             // cardView: false,                    //是否显示详细视图
             // detailView: false,                   //是否显示父子表
+            rowStyle: function (row, index) {
+                //这里有5个取值代表5中颜色['active', 'success', 'info', 'warning', 'danger'];
+                var strclass = "";
+                if (row.mechineSensor <= 75) {
+                    strclass = 'success';//还有一个active
+                }
+                else if (row.mechineSensor >= 75) {
+                    strclass = 'warning';
+                }
+                else {
+                    return {};
+                }
+                return {classes: strclass}
+            },
             columns: [{
                 checkbox: true
             }, {
-                field: 'user_id',
+                field: 'id',
                 title: 'ID',
                 // visible: false
             }, {
-                field: 'user',
-                title: '用户'
+                field: 'macAddr',
+                title: 'MAC地址'
+            }, {
+                field: 'serverStat',
+                title: '服务状态',
+                visible: false
+            }, {
+                field: 'mechineStat',
+                title: '机器状态',
+                visible: false
+            }, {
+                field: 'mechineSensor',
+                title: '机器温度',
+            }, {
+                field: 'ipAddr',
+                title: 'IP地址'
+            }, {
+                field: 'username',
+                title: '用户名称',
+                visible: false
+            }, {
+                field: 'runTime',
+                title: '提交时间'
             },],
         });
     };
-        //得到查询的参数
+    //得到查询的参数
     oFileTableInit.queryParams = function (params) {
         var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
             limit: params.limit,   //页面大小

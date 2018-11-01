@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import json
+import time
 
 from django.forms import model_to_dict
 from django.shortcuts import render
@@ -16,7 +17,12 @@ def index(req):
 
 
 def lukTotalMsg(req):
-    return render(req, 'luktotalmsg.html')
+    totalNum = len(LukInfo.objects.all())
+    runNum = len(LukInfo.objects.filter(serverStat='True'))
+    stopNum = len(LukInfo.objects.filter(serverStat='Flase'))
+    offNum = len(LukInfo.objects.filter(mechineStat='Flase'))
+    return render(req, 'luktotalmsg.html', {'totalNum': totalNum, 'runNum': runNum,
+                                            'stopNum': stopNum, 'offNum': offNum})
 
 
 def lukUser(req):
@@ -24,6 +30,10 @@ def lukUser(req):
 
 
 def lukService(req):
+    searchName = req.GET.get("name")
+    searchStat = req.GET.get("state")
+    if searchName and searchStat:
+        global searchName, searchStat
     return render(req, 'lukservice.html')
 
 
@@ -71,7 +81,13 @@ def lukServerMsg(request):
 def lukServiceMsg(request):
     limit = request.GET.get("limit")
     offset = request.GET.get("offset")
-    host = LukInfo.objects.all()
+    if searchName and searchStat:
+        if searchName == "serverStat":
+            host = LukInfo.objects.filter(serverStat=searchStat)
+        elif searchName == "mechineStat":
+            host = LukInfo.objects.filter(mechineStat=searchStat)
+    else:
+        host = LukInfo.objects.all()
     lenth = len(host)
     if not offset or not limit:
         host = host
@@ -83,3 +99,39 @@ def lukServiceMsg(request):
     for each in host:
         data.append(model_to_dict(each))
     return HttpResponse(json.dumps({"rows": data, "total": lenth}))
+
+
+def lukAddMsg(req):
+    import time
+    if req.method == 'POST':
+        luk_data = json.loads(req.body)
+        for data in luk_data:
+            if data.has_key("macAddr"):
+                macAddr = data['macAddr']
+                try:
+                    lukinfo = LukInfo.objects.get(macAddr=macAddr)
+                except Exception:
+                    lukinfo = LukInfo()
+                lukinfo.macAddr = data['macAddr']
+                lukinfo.mechineSensor = data['mechineSensor']
+                lukinfo.mechineStat = data['mechineStat']
+                lukinfo.serverStat = data['serverStat']
+                lukinfo.ipAddr = data['ipAddr']
+                lukinfo.runTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+                lukinfo.save()
+            else:
+                ipAddr = data["ipAddr"]
+                try:
+                    lukinfo = LukInfo.objects.get(ipAddr=ipAddr)
+                except Exception:
+                    lukinfo = LukInfo()
+                lukinfo.mechineSensor = data['mechineSensor']
+                lukinfo.mechineStat = data['mechineStat']
+                lukinfo.serverStat = data['serverStat']
+                lukinfo.ipAddr = data['ipAddr']
+                lukinfo.runTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+                lukinfo.save()
+        return HttpResponse('ok')
+    else:
+        return HttpResponse('off')
+

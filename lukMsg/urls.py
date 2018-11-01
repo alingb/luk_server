@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'lukServerMsg$', lukServerMsg, name='lukservermsg'),
     url(r'lukServiceMsg$', lukServiceMsg, name='lukservicermsg'),
     url(r'lukUserChange$', lukUserChange, name='lukuserchange'),
+    url(r'lukAddMsg$', lukAddMsg, name='lukaddmsg'),
 ]

@@ -14,11 +14,10 @@ class LukInfo(models.Model):
     ipAddr = models.CharField('IP地址', max_length=255, blank=True)
     username = models.CharField('用户名称', max_length=255, blank=True)
     runTime = models.CharField('提交时间', max_length=255, blank=True)
+    lukSn = models.CharField('矿机序号', max_length=255, blank=True, default='-')
 
 
 class LukUser(models.Model):
     user = models.CharField(max_length=255)
-    user_id = models.IntegerField(unique=True, primary_key=True)
-
     def __unicode__(self):
         return self.user
