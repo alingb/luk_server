@@ -2,8 +2,11 @@
 from __future__ import unicode_literals
 
 import json
+import re
 import time
 
+import requests
+from bs4 import BeautifulSoup
 from django.forms import model_to_dict
 from django.shortcuts import render
 from django.http.response import HttpResponse
@@ -13,7 +16,49 @@ from lukMsg.models import LukInfo, LukUser
 
 
 def index(req):
-    return render(req, 'starter.html')
+    url = 'https://www.f2pool.com/xmr/4DSQMNzzq46N1z2pZWAVdeA6JvUL9TCB2bnBiA3ZzoqEdYJnMydt5akCa3vtmapeDsbVKGPFdNkzqTcJS8M8oyK7WGitvMmKXCHMHeYdRt'
+    header = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) '
+                      'Chrome/61.0.3163.79 Safari/537.36'
+    }
+    from requests.packages.urllib3.exceptions import InsecureRequestWarning
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    response = requests.get(url, headers=header, verify=False, timeout=30)
+    response.encoding = 'utf-8'
+    html_data = response.text
+    soup = BeautifulSoup(html_data, "html.parser")
+    income_list = soup.find_all('span', class_="item-value")
+    xmr_imcome = []
+    for i in income_list:
+        xmr_imcome.append(i.get_text())
+    lukuser_online = soup.find('span', class_="item-online-value").get_text()
+    lukuser_all = soup.find('span', class_="item-all-value").get_text()
+    xmr_row = soup.find_all('strong')
+    xmr_run = []
+    for row in xmr_row:
+        xmr_run.append(row.get_text())
+    table = soup.find('table', id="workers")
+    td_compile = re.compile(r"<td>(.*)</td>", re.I)
+    td = td_compile.findall(str(table))
+    list, td_dict, num = [], {}, 0
+    td_list = []
+    for each in td:
+        if num < 4:
+            td_list.append(each)
+            num += 1
+        else:
+            td_dict['mac'] = td_list[0]
+            td_dict['fifteen'] = td_list[1]
+            td_dict['tweentyfour'] = td_list[2]
+            td_dict['reject'] = td_list[3]
+            time1 = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(re.sub(r'\D', '', each)[:10])))
+            td_dict['time'] = time1
+            list.append(td_dict)
+            td_list, td_dict = [], {}
+            num = 0
+    return render(req, 'index.html', {'xmr_imcome': xmr_imcome, 'lukuser_online': lukuser_online,
+                                      'lukuser_all': lukuser_all, 'xmr_run': xmr_run, 'list': list})
 
 
 def lukTotalMsg(req):
@@ -30,10 +75,9 @@ def lukUser(req):
 
 
 def lukService(req):
+    global searchName, searchStat
     searchName = req.GET.get("name")
     searchStat = req.GET.get("state")
-    if searchName and searchStat:
-        global searchName, searchStat
     return render(req, 'lukservice.html')
 
 

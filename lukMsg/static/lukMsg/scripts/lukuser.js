@@ -89,9 +89,6 @@ function userUpdate() {
 }
 
 function buttonexec() {
-    $("#user_calculatio").click(function(){
-        window.open('https://www.f2pool.com/xmr/4DSQMNzzq46N1z2pZWAVdeA6JvUL9TCB2bnBiA3ZzoqEdYJnMydt5akCa3vtmapeDsbVKGPFdNkzqTcJS8M8oyK7WGitvMmKXCHMHeYdRt'
-        )});
     $("#user_submit").click(function () {
         var user_name = $("#user_name").val();
         $.ajax({
