@@ -24,7 +24,7 @@ def index(req):
     }
     from requests.packages.urllib3.exceptions import InsecureRequestWarning
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-    response = requests.get(url, headers=header, verify=False, timeout=30)
+    response = requests.get(url, headers=header, verify=False, timeout=10)
     response.encoding = 'utf-8'
     html_data = response.text
     soup = BeautifulSoup(html_data, "html.parser")
@@ -62,10 +62,10 @@ def index(req):
 
 
 def lukTotalMsg(req):
-    totalNum = len(LukInfo.objects.all())
-    runNum = len(LukInfo.objects.filter(serverStat='True'))
-    stopNum = len(LukInfo.objects.filter(serverStat='Flase'))
-    offNum = len(LukInfo.objects.filter(mechineStat='Flase'))
+    totalNum = LukInfo.objects.all().count()
+    runNum = LukInfo.objects.filter(serverStat='True').count()
+    stopNum = LukInfo.objects.filter(serverStat='Flase').count()
+    offNum = LukInfo.objects.filter(mechineStat='Flase').count()
     return render(req, 'luktotalmsg.html', {'totalNum': totalNum, 'runNum': runNum,
                                             'stopNum': stopNum, 'offNum': offNum})
 
@@ -109,7 +109,7 @@ def lukServerMsg(request):
     limit = request.GET.get("limit")
     offset = request.GET.get("offset")
     host = LukUser.objects.all()
-    lenth = len(host)
+    lenth = host.count()
     if not offset or not limit:
         host = host
     else:
@@ -132,7 +132,7 @@ def lukServiceMsg(request):
             host = LukInfo.objects.filter(mechineStat=searchStat)
     else:
         host = LukInfo.objects.all()
-    lenth = len(host)
+    lenth = host.count()
     if not offset or not limit:
         host = host
     else:
