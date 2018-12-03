@@ -1,6 +1,6 @@
 {% extends 'starter.html' %}
 {% block link1 %}
-<li class="active"><a href="/lukServer/luktotalmsg"><i class="fa fa-dashboard"></i> <span>概括信息</span></a></li>
+<li class="active"><a href="{% url "luktotalmsg" %}"><i class="fa fa-dashboard"></i> <span>概括信息</span></a></li>
 {% endblock %}
 {% block content %}
     <div class="col-lg-5 col-xs-8">
@@ -13,7 +13,7 @@
             <div class="icon">
                 <i class="ion ion-person-stalker"></i>
             </div>
-            <a href="/lukServer/lukservice" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="{% url "lukservice" %}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
         <div class="col-lg-5 col-xs-8">
@@ -26,7 +26,7 @@
             <div class="icon">
                 <i class="ion ion-person"></i>
             </div>
-            <a href="/lukServer/lukservice?name=mechineStat&state=True" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="{% url "lukservice" %}?name=mechineStat&state=True" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <div class="col-lg-5 col-xs-8">
@@ -39,7 +39,7 @@
             <div class="icon">
                 <i class="ion ion-stop"></i>
             </div>
-            <a href="/lukServer/lukservice?name=serverStat&state=Flase" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="{% url "lukservice" %}?name=serverStat&state=Flase" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <div class="col-lg-5 col-xs-8">
@@ -52,7 +52,7 @@
             <div class="icon">
                 <i class="ion ion-locked"></i>
             </div>
-            <a href="/lukServer/lukservice?name=mechineStat&state=Flase" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="{% url "lukservice" %}?name=mechineStat&state=Flase" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
 {% endblock %}
