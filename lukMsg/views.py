@@ -62,7 +62,7 @@ def lukTotalMsg(req):
             list.append(td_dict)
             td_list, td_dict = [], {}
             num = 0
-    return render(req, 'lukTotalmsg.html', {'xmr_imcome': xmr_imcome, 'lukuser_online': lukuser_online,
+    return render(req, 'lukTotalMsg.html', {'xmr_imcome': xmr_imcome, 'lukuser_online': lukuser_online,
                                       'lukuser_all': lukuser_all, 'xmr_run': xmr_run, 'list': list})
 
 @login_required
