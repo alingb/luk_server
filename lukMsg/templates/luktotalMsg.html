@@ -1,58 +1,132 @@
 {% extends 'starter.html' %}
-{% block link1 %}
-<li class="active"><a href="{% url "luktotalmsg" %}"><i class="fa fa-dashboard"></i> <span>概括信息</span></a></li>
+{% load static %}
+{% block css %}
+    <link rel="stylesheet"
+          href="{% static 'lukMsg/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
 {% endblock %}
 {% block content %}
-    <div class="col-lg-5 col-xs-8">
-        <!-- small box -->
-        <div class="small-box bg-blue">
-            <div class="inner">
-                <h3>{{ totalNum }}</h3>
-                <p>矿机总数量</p>
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">过去24小时收益(XMR)</span>
+                    <span class="info-box-number">{{ xmr_imcome.0 }}</span>
+                </div>
             </div>
-            <div class="icon">
-                <i class="ion ion-person-stalker"></i>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-light-blue-active"><i class="fa fa-credit-card"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">总收益(XMR)</span>
+                    <span class="info-box-number">{{ xmr_imcome.1 }}</span>
+                </div>
             </div>
-            <a href="{% url "lukservice" %}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+        <div class="clearfix visible-sm-block"></div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">已支付(XMR)</span>
+                    <span class="info-box-number">{{ xmr_imcome.2 }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-blue"><i class="fa fa-usd"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">账户余额(XMR)</span>
+                    <span class="info-box-number">{{ xmr_imcome.3 }}</span>
+                </div>
+            </div>
         </div>
     </div>
-        <div class="col-lg-5 col-xs-8">
-        <!-- small box -->
-        <div class="small-box bg-green">
-            <div class="inner">
-                <h3>{{ runNum }}</h3>
-                <p>运行矿机数量</p>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-success box-solid">
+                <div class="box-header with-border">
+                    <h3 class="box-title">15分钟平均算力</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    {{ xmr_run.0 }}
+                </div>
             </div>
-            <div class="icon">
-                <i class="ion ion-person"></i>
+        </div>
+        <div class="col-md-6">
+            <div class="box box-primary box-solid">
+                <div class="box-header with-border">
+                    <h3 class="box-title">24小时平均算力</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body" style="">
+                    {{ xmr_run.1 }}
+                </div>
             </div>
-            <a href="{% url "lukservice" %}?name=mechineStat&state=True" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
-    <div class="col-lg-5 col-xs-8">
-        <!-- small box -->
-        <div class="small-box bg-yellow-active">
-            <div class="inner">
-                <h3>{{ stopNum }}</h3>
-                <p>程序停止数量</p>
+
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">
+                            <span class="badge bg-green">在线矿工:<b>{{ lukuser_online }}</b></span>
+                            <span class="badge bg-light-blue">全部矿工:<b>{{ lukuser_all }}</b></span>
+                        </h3>
+                    </div>
+                    <div class="box-body">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>矿工</th>
+                                <th>15分钟平均算力</th>
+                                <th>24小时平均算力</th>
+                                <th>24小时过期拒绝率</th>
+                                <th>最近提交时间</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for each in list %}
+                                <tr>
+                                    <td>{{ each.mac }}</td>
+                                    <td>{{ each.fifteen }}</td>
+                                    <td>{{ each.tweentyfour }}</td>
+                                    <td>{{ each.reject }}</td>
+                                    <td>{{ each.time }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-            <div class="icon">
-                <i class="ion ion-stop"></i>
-            </div>
-            <a href="{% url "lukservice" %}?name=serverStat&state=Flase" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
-    </div>
-    <div class="col-lg-5 col-xs-8">
-        <!-- small box -->
-        <div class="small-box bg-red-active">
-            <div class="inner">
-                <h3>{{ offNum }}</h3>
-                <p>矿机停止数量</p>
-            </div>
-            <div class="icon">
-                <i class="ion ion-locked"></i>
-            </div>
-            <a href="{% url "lukservice" %}?name=mechineStat&state=Flase" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-        </div>
-    </div>
+    </section>
+{% endblock %}
+{% block script %}
+    <script src="{% static 'lukMsg/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'lukMsg/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script>
+        $(function () {
+            $('#example1').DataTable();
+        });
+        $(function () {
+        $("#lukmsg_link").addClass("active")
+    })
+    </script>
 {% endblock %}

@@ -20,7 +20,7 @@ from lukMsg.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'lukServer', include('lukMsg.urls')),
+    url(r'lukServer/', include('lukMsg.urls')),
     url(r'login', login_user, name='login'),
     url(r'index', index, name='index'),
     url(r'logout', logout_user, name='logout'),

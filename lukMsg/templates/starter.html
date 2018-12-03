@@ -74,15 +74,9 @@
                 </div>
             </div>
             <ul class="sidebar-menu" data-widget="tree">
-                {% block link1 %}
                     <li id="index_link"><a href="{% url  "index" %}"><i class="fa fa-dashboard"></i> <span>概括信息</span></a></li>
-                {% endblock link1 %}
-                {% block link2 %}
                     <li id="lukuser_link"><a href="{% url "lukuser" %}"><i class="fa fa-user"></i> <span>矿机用户</span></a></li>
-                {% endblock link2 %}
-                {% block link3 %}
                     <li id="lukmsg_link"><a href="{% url "luktotalmsg" %}"><i class="fa fa-wrench"></i> <span>算力查看</span></a></li>
-                {% endblock %}
                 {% block treeview %}
                     <li class="treeview">
                         <a href="#"><i class="fa fa-calendar"></i> <span>矿机管理</span>
