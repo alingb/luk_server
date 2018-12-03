@@ -2,7 +2,7 @@ from django.conf.urls import url
 from .views import *
 
 urlpatterns = [
-    url(r'^$', index, name='lukmsg'),
+    # url(r'^$', index, name='lukmsg'),
     url(r'luktotalmsg$', lukTotalMsg, name='luktotalmsg'),
     url(r'lukuser$', lukUser, name='lukuser'),
     url(r'lukservice$', lukService, name='lukservice'),
@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'lukServiceMsg$', lukServiceMsg, name='lukservicermsg'),
     url(r'lukUserChange$', lukUserChange, name='lukuserchange'),
     url(r'lukAddMsg$', lukAddMsg, name='lukaddmsg'),
+    url(r'lukAddSn$', lukAddSn, name='lukaddsn'),
 ]

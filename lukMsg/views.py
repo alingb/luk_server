@@ -5,17 +5,22 @@ import json
 import re
 import time
 
+
 import requests
 from bs4 import BeautifulSoup
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.forms import model_to_dict
-from django.shortcuts import render
-from django.http.response import HttpResponse
+from django.shortcuts import render, redirect
+from django.http.response import HttpResponse, HttpResponseRedirect
 
 # Create your views here.
+from django.urls import reverse
+
 from lukMsg.models import LukInfo, LukUser
 
-
-def index(req):
+@login_required
+def lukTotalMsg(req):
     url = 'https://www.f2pool.com/xmr/4DSQMNzzq46N1z2pZWAVdeA6JvUL9TCB2bnBiA3ZzoqEdYJnMydt5akCa3vtmapeDsbVKGPFdNkzqTcJS8M8oyK7WGitvMmKXCHMHeYdRt'
     header = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) '
@@ -57,30 +62,30 @@ def index(req):
             list.append(td_dict)
             td_list, td_dict = [], {}
             num = 0
-    return render(req, 'index.html', {'xmr_imcome': xmr_imcome, 'lukuser_online': lukuser_online,
+    return render(req, 'lukTotalmsg.html', {'xmr_imcome': xmr_imcome, 'lukuser_online': lukuser_online,
                                       'lukuser_all': lukuser_all, 'xmr_run': xmr_run, 'list': list})
 
-
-def lukTotalMsg(req):
+@login_required
+def index(req):
     totalNum = LukInfo.objects.all().count()
     runNum = LukInfo.objects.filter(serverStat='True').count()
     stopNum = LukInfo.objects.filter(serverStat='Flase').count()
     offNum = LukInfo.objects.filter(mechineStat='Flase').count()
-    return render(req, 'luktotalmsg.html', {'totalNum': totalNum, 'runNum': runNum,
+    return render(req, 'index.html', {'totalNum': totalNum, 'runNum': runNum,
                                             'stopNum': stopNum, 'offNum': offNum})
 
-
+@login_required
 def lukUser(req):
     return render(req, 'lukuser.html')
 
-
+@login_required
 def lukService(req):
     global searchName, searchStat
     searchName = req.GET.get("name")
     searchStat = req.GET.get("state")
     return render(req, 'lukservice.html')
 
-
+@login_required
 def lukSensor(req):
     return render(req, 'lukSensor.html')
 
@@ -150,7 +155,7 @@ def lukAddMsg(req):
     if req.method == 'POST':
         luk_data = json.loads(req.body)
         for data in luk_data:
-            if data.has_key("macAddr"):
+            if data. has_key("macAddr"):
                 macAddr = data['macAddr']
                 try:
                     lukinfo = LukInfo.objects.get(macAddr=macAddr)
@@ -179,3 +184,60 @@ def lukAddMsg(req):
     else:
         return HttpResponse('off')
 
+
+def lukAddSn(req):
+    if req.method == "POST":
+        print "yes"
+        luk_data = json.loads(req.body)
+        for data in luk_data:
+            if data. has_key("macAddr"):
+                macAddr = data['macAddr']
+
+                for addr in macAddr:
+                    try:
+                        lukinfo = LukInfo.objects.get(macAddr=addr)
+                    except Exception:
+                        lukinfo = LukInfo()
+                    lukinfo.lukSn = data['sn']
+                    lukinfo.macAddr = addr
+                    lukinfo.save()
+
+                # lukinfo.save()
+        return HttpResponse()
+    else:
+        return HttpResponse("error")
+
+
+def login_user(request):
+    redirect_to = request.GET.get('next', '')
+    if request.method == 'POST':
+        username = request.POST.get("username")
+        passwd = request.POST.get("passwd")
+        check = request.POST.get("check")
+        next = request.GET.get("next")
+        user = authenticate(username=username, password=passwd)
+        if user:
+            if user.is_active:
+                if user.is_staff:
+                    login(request, user)
+                    if check:
+                        request.session.set_expiry(None)
+                    else:
+                        request.session.set_expiry(0)
+                    if next:
+                        return HttpResponseRedirect(next)
+                    else:
+                        return redirect(reverse('index'))
+                else:
+                    if username != "admin":
+                        return render(request, 'login.html', {'error': u'用户没有登入权限!'})
+            else:
+                return render(request, 'login.html', {'error': u'用户没有激活!'})
+        else:
+            return render(request, 'login.html', {'error': u'用户名或密码错误!'})
+    return render(request, 'login.html', {'redirect_to': redirect_to})
+
+
+def logout_user(req):
+    logout(req)
+    return redirect(reverse('login'))

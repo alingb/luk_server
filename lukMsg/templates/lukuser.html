@@ -1,8 +1,5 @@
 {% extends 'starter.html' %}
 {% load static %}
-{% block link2 %}
-<li class="active"><a href="/lukServer/lukuser"><i class="fa fa-user"></i> <span>矿机用户</span></a></li>
-{% endblock %}
 {% block content %}
     <div id="toolbar" class="btn-group">
         <button type="button" class="btn btn-primary" name="create_group" id="create_user" data-toggle="modal" data-target="#myModal">
@@ -42,4 +39,7 @@
 {% endblock %}
 {% block script %}
 <script src="{% static 'lukMsg/scripts/lukuser.js'%}"></script>
+    <script>
+        $("#lukuser_link").addClass("active");
+    </script>
 {% endblock script %}

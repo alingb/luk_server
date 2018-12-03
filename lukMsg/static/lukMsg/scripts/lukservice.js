@@ -54,8 +54,12 @@ var FileTableInit = function () {
             }, {
                 field: 'id',
                 title: 'ID',
-                // visible: false
+                visible: false
             }, {
+                field: 'lukSn',
+                title: 'SN',
+                // visible: false
+            },{
                 field: 'macAddr',
                 title: 'MAC地址'
             },{

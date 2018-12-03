@@ -19,4 +19,9 @@
 {% endblock %}
 {% block script %}
     <script src="{% static 'lukMsg/scripts/luksensor.js' %}"></script>
+    <script>
+        $(function () {
+            $("#luksensor_link").addClass("active")
+        })
+    </script>
 {% endblock script %}

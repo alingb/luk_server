@@ -11,8 +11,8 @@
               </span>
         </a>
         <ul class="treeview-menu">
-            <li class="active"><a href="/lukServer/lukservice"><i class="fa fa-calendar-check-o"></i>程序监控</a></li>
-            <li><a href="/lukServer/luksensor"><i class="fa fa-calendar-check-o"></i>温度监控</a></li>
+            <li class="active"><a href="{% url "lukservice" %}"><i class="fa fa-calendar-check-o"></i>程序监控</a></li>
+            <li><a href="{% url "luksensor" %}"><i class="fa fa-calendar-check-o"></i>温度监控</a></li>
         </ul>
     </li>
 {% endblock treeview %}

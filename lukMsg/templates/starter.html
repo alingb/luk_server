@@ -23,7 +23,7 @@
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
     <header class="main-header">
-        <a href="/lukServer" class="logo">
+        <a href="{% url "index" %}" class="logo">
             <span class="logo-mini"><b>L</b>UK</span>
             <span class="logo-lg"><b>Luk</b>Miner</span>
         </a>
@@ -33,6 +33,32 @@
             </a>
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
+                    <li class="dropdown user user-menu">
+                        {% if user.username %}
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <span class="hidden-xs">{{ user.username }}</span>
+                            </a>
+                        {% else %}
+                            <div style="margin-top: 15px;">
+                                <a class="text-bold text-white no-underline" href="{% url "login" %}"
+                                   style="color: #ffffff; font-size: 15px;">登入</a>
+                            </div>
+                        {% endif %}
+                        <ul class="dropdown-menu">
+                            <li class="user-header">
+                                <img src="{% static 'lukMsg/dist/img/user2-160x160.jpg' %}" class="img-circle"
+                                     alt="User Image">
+                                <p>
+                                    欢迎使用矿机系统!
+                                </p>
+                            </li>
+                            <li class="user-footer">
+                                <div class="pull-right">
+                                    <a href="{% url "logout" %}" class="btn btn-default btn-flat">注销</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -49,13 +75,13 @@
             </div>
             <ul class="sidebar-menu" data-widget="tree">
                 {% block link1 %}
-                    <li><a href="/lukServer/luktotalmsg"><i class="fa fa-dashboard"></i> <span>概括信息</span></a></li>
+                    <li id="index_link"><a href="{% url  "index" %}"><i class="fa fa-dashboard"></i> <span>概括信息</span></a></li>
                 {% endblock link1 %}
                 {% block link2 %}
-                    <li><a href="/lukServer/lukuser"><i class="fa fa-user"></i> <span>矿机用户</span></a></li>
+                    <li id="lukuser_link"><a href="{% url "lukuser" %}"><i class="fa fa-user"></i> <span>矿机用户</span></a></li>
                 {% endblock link2 %}
                 {% block link3 %}
-                    <li><a href="/lukServer"><i class="fa fa-wrench"></i> <span>算力查看</span></a></li>
+                    <li id="lukmsg_link"><a href="{% url "luktotalmsg" %}"><i class="fa fa-wrench"></i> <span>算力查看</span></a></li>
                 {% endblock %}
                 {% block treeview %}
                     <li class="treeview">
@@ -65,8 +91,8 @@
               </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="/lukServer/lukservice"><i class="fa fa-calendar-check-o"></i>程序监控</a></li>
-                            <li><a href="/lukServer/luksensor"><i class="fa fa-calendar-check-o"></i>温度监控</a></li>
+                            <li id="lukservice_link"><a href="{% url "lukservice" %}"><i class="fa fa-calendar-check-o"></i>程序监控</a></li>
+                            <li id="luksensor_link"><a href="{% url "luksensor" %}"><i class="fa fa-calendar-check-o"></i>温度监控</a></li>
                         </ul>
                     </li>
                 {% endblock treeview %}
