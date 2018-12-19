@@ -5,7 +5,6 @@ import json
 import re
 import time
 
-
 import requests
 from bs4 import BeautifulSoup
 from django.contrib.auth import authenticate, login, logout
@@ -18,6 +17,10 @@ from django.http.response import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 
 from lukMsg.models import LukInfo, LukUser
+
+# from .saltstack import SaltApi
+# salt_api = "https://127.0.0.1:8000/"
+# salt = SaltApi(salt_api)
 
 @login_required
 def lukTotalMsg(req):
@@ -53,17 +56,30 @@ def lukTotalMsg(req):
             td_list.append(each)
             num += 1
         else:
-            td_dict['mac'] = td_list[0]
-            td_dict['fifteen'] = td_list[1]
-            td_dict['tweentyfour'] = td_list[2]
-            td_dict['reject'] = td_list[3]
-            time1 = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(re.sub(r'\D', '', each)[:10])))
+            span_compile = re.compile(r"<span.*>(.*)</span>", re.I)
+            if "span" in td_list[0]:
+                td_dict['mac'] = span_compile.search(td_list[0]).group(1)
+                td_dict['fifteen'] = span_compile.search(td_list[1]).group(1)
+                td_dict['tweentyfour'] = span_compile.search(td_list[2]).group(1)
+                td_dict['reject'] = span_compile.search(td_list[3]).group(1)
+            else:
+                td_dict['mac'] = td_list[0]
+                td_dict['fifteen'] = td_list[1]
+                td_dict['tweentyfour'] = td_list[2]
+                if "span" in td_list[3]:
+                    td_dict['reject'] = span_compile.search(td_list[3]).group(1)
+                else:
+                    td_dict['reject'] = td_list[3]
+            time_compile = re.compile(r".*new Date\((.*)\)\)\)</script>.*")
+            time_date = time_compile.search(each, re.I).group(1)
+            time1 = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(time_date[:10])))
             td_dict['time'] = time1
             list.append(td_dict)
             td_list, td_dict = [], {}
             num = 0
     return render(req, 'lukTotalMsg.html', {'xmr_imcome': xmr_imcome, 'lukuser_online': lukuser_online,
-                                      'lukuser_all': lukuser_all, 'xmr_run': xmr_run, 'list': list})
+                                            'lukuser_all': lukuser_all, 'xmr_run': xmr_run, 'list': list})
+
 
 @login_required
 def index(req):
@@ -72,18 +88,44 @@ def index(req):
     stopNum = LukInfo.objects.filter(serverStat='Flase').count()
     offNum = LukInfo.objects.filter(mechineStat='Flase').count()
     return render(req, 'index.html', {'totalNum': totalNum, 'runNum': runNum,
-                                            'stopNum': stopNum, 'offNum': offNum})
+                                      'stopNum': stopNum, 'offNum': offNum})
+
 
 @login_required
 def lukUser(req):
     return render(req, 'lukuser.html')
 
+
 @login_required
 def lukService(req):
-    global searchName, searchStat
-    searchName = req.GET.get("name")
-    searchStat = req.GET.get("state")
-    return render(req, 'lukservice.html')
+    if req.method == "GET":
+        global searchName, searchStat
+        searchName = req.GET.get("name")
+        searchStat = req.GET.get("state")
+        return render(req, 'lukservice.html')
+    else:
+        limit = req.GET.get("limit")
+        offset = req.GET.get("offset")
+        if searchName == "serverStat":
+            host = LukInfo.objects.filter(serverStat=searchStat)
+        elif searchName == "mechineStat":
+            host = LukInfo.objects.filter(mechineStat=searchStat)
+        else:
+            host = LukInfo.objects.all()
+        lenth = host.count()
+        if not offset or not limit:
+            host = host
+        else:
+            offset = int(offset)
+            limit = int(limit)
+            host = host[offset:offset + limit]
+        data = []
+        for each in host:
+            data.append(model_to_dict(each))
+        return HttpResponse(json.dumps({"rows": data, "total": lenth}))
+
+
+
 
 @login_required
 def lukSensor(req):
@@ -107,7 +149,20 @@ def lukAddUser(req):
 
 
 def lukUserChange(req):
-    pass
+    msg = req.GET.get("msg")
+    state = req.GET.get("state")
+    name = req.GET.get("name")
+    if name == "luk":
+        if state == "reset":
+            pass
+        elif state == "off":
+            pass
+    elif name == "service":
+        if state == "reset":
+            pass
+        elif state == "off":
+            pass
+    return HttpResponse()
 
 
 def lukServerMsg(request):
@@ -130,11 +185,10 @@ def lukServerMsg(request):
 def lukServiceMsg(request):
     limit = request.GET.get("limit")
     offset = request.GET.get("offset")
-    if searchName and searchStat:
-        if searchName == "serverStat":
-            host = LukInfo.objects.filter(serverStat=searchStat)
-        elif searchName == "mechineStat":
-            host = LukInfo.objects.filter(mechineStat=searchStat)
+    if searchName == "serverStat":
+        host = LukInfo.objects.filter(serverStat=searchStat)
+    elif searchName == "mechineStat":
+        host = LukInfo.objects.filter(mechineStat=searchStat)
     else:
         host = LukInfo.objects.all()
     lenth = host.count()
@@ -190,7 +244,7 @@ def lukAddSn(req):
         print "yes"
         luk_data = json.loads(req.body)
         for data in luk_data:
-            if data. has_key("macAddr"):
+            if data.has_key("macAddr"):
                 macAddr = data['macAddr']
 
                 for addr in macAddr:
@@ -201,11 +255,13 @@ def lukAddSn(req):
                     lukinfo.lukSn = data['sn']
                     lukinfo.macAddr = addr
                     lukinfo.save()
-
-                # lukinfo.save()
         return HttpResponse()
     else:
         return HttpResponse("error")
+
+
+def lukChangeStat(req):
+    pass
 
 
 def login_user(request):

@@ -9,7 +9,7 @@ var FileTableInit = function () {
     //初始化Table
     oFileTableInit.Init = function () {
         $('#luk_service').bootstrapTable({
-            url: '/lukServer/lukServiceMsg',         //请求后台的URL（*）
+            url: '/lukServer/lukService',         //请求后台的URL（*）
             method: 'get',    //请求方式（*）
             toolbar: '#toolbar',                //工具按钮用哪个容器
             striped: true,                      //是否显示行间隔色
@@ -47,7 +47,7 @@ var FileTableInit = function () {
                 else {
                     return {};
                 }
-                return { classes: strclass }
+                return {classes: strclass}
             },
             columns: [{
                 checkbox: true
@@ -59,37 +59,37 @@ var FileTableInit = function () {
                 field: 'lukSn',
                 title: 'SN',
                 // visible: false
-            },{
+            }, {
                 field: 'macAddr',
                 title: 'MAC地址'
-            },{
+            }, {
                 field: 'serverStat',
                 title: '服务状态'
-            },{
+            }, {
                 field: 'mechineStat',
                 title: '机器状态'
-            },{
+            }, {
                 field: 'mechineSensor',
                 title: '机器温度',
                 visible: false
-            },{
+            }, {
                 field: 'ipAddr',
                 title: 'IP地址'
-            },{
+            }, {
                 field: 'username',
                 title: '用户名称',
                 visible: false
-            },{
+            }, {
                 field: 'runTime',
                 title: '提交时间'
-            },],
+            }]
         });
     };
-        //得到查询的参数
+    //得到查询的参数
     oFileTableInit.queryParams = function (params) {
         var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
             limit: params.limit,   //页面大小
-            offset: params.offset,  //页码
+            offset: params.offset //页码
         };
         return temp;
     };
@@ -97,72 +97,94 @@ var FileTableInit = function () {
 };
 
 function buttonexec() {
+    url = "/lukServer/lukChangeStat";
     $("#reset_luk").click(function () {
-        var luk_info = $("#luk_service").val();
-        $.ajax({
-            type: "post",
-            url: "/lukServer/lukAddUser",
-            data: {"data": JSON.stringify({"user": luk_info, "state": "reset", "name": "luk"})},
-            success: function (data, status) {
-                toastr.success('矿机重启成功');
-                $("#luk_service").bootstrapTable('refresh');
-            },
-            error: function (data, status) {
-                toastr.error('执行失败');
-                return false;
-            }
-
-        })
+        var luk_info = $('#luk_service').bootstrapTable('getSelections');
+        if (luk_info.length <= 0) {
+            toastr.warning("请选择需要设置的矿机")
+        } else {
+            $.ajax({
+                type: "post",
+                url: url,
+                data: {"data": JSON.stringify({"msg": luk_info, "state": "reset", "name": "luk"})},
+                success: function (data, status) {
+                    toastr.success('矿机重启成功');
+                    $("#luk_service").bootstrapTable('refresh');
+                },
+                error: function (data, status) {
+                    toastr.error('执行失败');
+                    return false;
+                }
+            })
+        }
     });
+
     $("#off_luk").click(function () {
-        var luk_info = $("#luk_service").val();
-        $.ajax({
-            type: "post",
-            url: "/lukServer/lukAddUser",
-            data: {"data": JSON.stringify({"user": luk_info, "state": "off", "name": "luk"})},
-            success: function (data, status) {
-                toastr.success('矿机关闭成功');11
-                $("#luk_service").bootstrapTable('refresh');
-            },
-            error: function (data, status) {
-                toastr.error('执行失败');
-                return false;
-            }
+        var luk_info = $("#luk_service").bootstrapTable('getSelections');
+        if (luk_info.length <= 0) {
+            toastr.warning("请选择需要设置的矿机")
+        } else {
+            $.ajax({
+                type: "post",
+                url: url,
+                data: {"data": JSON.stringify({"msg": luk_info, "state": "off", "name": "luk"})},
+                success: function (data, status) {
+                    toastr.success('矿机关闭成功');
+                    $("#luk_service").bootstrapTable('refresh');
+                },
+                error: function (data, status) {
+                    toastr.error('执行失败');
+                    return false;
+                }
 
-        })
+            })
+        }
+
     });
+
     $("#off_service").click(function () {
-        var luk_info = $("#luk_service").val();
-        $.ajax({
-            type: "post",
-            url: "/lukServer/lukAddUser",
-            data: {"data": JSON.stringify({"user": luk_info, "state": "off", "name": "service"})},
-            success: function (data, status) {
-                toastr.success('程序关闭成功');
-                $("#luk_service").bootstrapTable('refresh');
-            },
-            error: function (data, status) {
-                toastr.error('执行失败');
-                return false;
-            }
+        var luk_info = $("#luk_service").bootstrapTable('getSelections');
+        if (luk_info.length <= 0) {
+            toastr.warning("请选择需要设置的矿机")
+        } else {
+            $.ajax({
+                type: "post",
+                url: url,
+                data: {"data": JSON.stringify({"msg": luk_info, "state": "off", "name": "service"})},
+                success: function (data, status) {
+                    toastr.success('程序关闭成功');
+                    $("#luk_service").bootstrapTable('refresh');
+                },
+                error: function (data, status) {
+                    toastr.error('执行失败');
+                    return false;
+                }
 
-        })
+            })
+        }
+
     });
-    $("#reset_service").click(function () {
-        var luk_info = $("#luk_service").val();
-        $.ajax({
-            type: "post",
-            url: "/lukServer/lukAddUser",
-            data: {"data": JSON.stringify({"user": luk_info, "state": "reset", "name": "service"})},
-            success: function (data, status) {
-                toastr.success('程序重启成功');
-                $("#luk_service").bootstrapTable('refresh');
-            },
-            error: function (data, status) {
-                toastr.error('执行失败');
-                return false;
-            }
 
-        })
+    $("#reset_service").click(function () {
+        var luk_info = $("#luk_service").bootstrapTable('getSelections');
+        if (luk_info.length <= 0) {
+            toastr.warning("请选择需要设置的矿机")
+        } else {
+            $.ajax({
+                type: "post",
+                url: url,
+                data: {"data": JSON.stringify({"msg": luk_info, "state": "reset", "name": "service"})},
+                success: function (data, status) {
+                    toastr.success('程序重启成功');
+                    $("#luk_service").bootstrapTable('refresh');
+                },
+                error: function (data, status) {
+                    toastr.error('执行失败');
+                    return false;
+                }
+
+            })
+        }
+
     });
 }

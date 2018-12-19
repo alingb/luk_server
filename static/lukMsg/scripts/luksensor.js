@@ -79,7 +79,7 @@ var FileTableInit = function () {
             }, {
                 field: 'runTime',
                 title: '提交时间'
-            },],
+            }]
         });
     };
     //得到查询的参数
