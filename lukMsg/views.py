@@ -255,11 +255,11 @@ def login_user(request):
         if user:
             if user.is_active:
                 if user.is_staff:
-                    login(request, user)
                     if check:
                         request.session.set_expiry(None)
                     else:
                         request.session.set_expiry(0)
+                    login(request, user)
                     if next:
                         return HttpResponseRedirect(next)
                     else:
@@ -274,6 +274,7 @@ def login_user(request):
     return render(request, 'login.html', {'redirect_to': redirect_to})
 
 
-def logout_user(req):
+def logout_user_msg(req):
     logout(req)
     return redirect(reverse('login'))
+
