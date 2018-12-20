@@ -18,9 +18,6 @@ from django.urls import reverse
 
 from lukMsg.models import LukInfo, LukUser
 
-from .saltstack import SaltApi
-salt_api = "https://127.0.0.1:8000/"
-salt = SaltApi(salt_api)
 
 @login_required
 def lukTotalMsg(req):
@@ -126,19 +123,6 @@ def lukAddUser(req):
 
 
 def lukUserChange(req):
-    msg = req.GET.get("msg")
-    state = req.GET.get("state")
-    name = req.GET.get("name")
-    if name == "luk":
-        if state == "reset":
-            pass
-        elif state == "off":
-            pass
-    elif name == "service":
-        if state == "reset":
-            pass
-        elif state == "off":
-            pass
     return HttpResponse()
 
 
@@ -214,12 +198,10 @@ def lukAddMsg(req):
 
 def lukAddSn(req):
     if req.method == "POST":
-        print "yes"
         luk_data = json.loads(req.body)
         for data in luk_data:
             if data.has_key("macAddr"):
                 macAddr = data['macAddr']
-
                 for addr in macAddr:
                     try:
                         lukinfo = LukInfo.objects.get(macAddr=addr)
@@ -234,7 +216,32 @@ def lukAddSn(req):
 
 
 def lukChangeStat(req):
-    pass
+    if req.method == "POST":
+        from .saltstack import SaltApi
+        salt_api = "https://127.0.0.1:8000/"
+        salt = SaltApi(salt_api)
+        data = req.POST.get("data")
+        info = json.loads(data)
+        name = info["name"]
+        state = info["state"]
+        msg = info["msg"]
+        if name == "service":
+            if state == "reset":
+                for each in msg:
+                    salt_msg = salt.cmd(each["ipAddr"], "service.restart", "luk-phi")
+                    return HttpResponse(salt_msg["ipAddr"])
+            elif state == "off":
+                for each in msg:
+                    salt_msg = salt.cmd(each["ipAddr"], "service.stop", "luk-phi")
+                    return HttpResponse(salt_msg["ipAddr"])
+        elif name == "luk":
+            if state == "reset":
+                for each in msg:
+                    salt.cmd(each["ipAddr"], "system.reboot", "luk-phi")
+            elif state == "off":
+                for each in msg:
+                    salt.cmd(each["ipAddr"], "system.shutdown", "luk-phi")
+    return HttpResponse()
 
 
 def login_user(request):

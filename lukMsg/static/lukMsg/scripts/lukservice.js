@@ -2,6 +2,7 @@ $(document).ready(function () {
     toastr.options.positionClass = 'toast-top-center';
     var oFileTable = new FileTableInit();
     oFileTable.Init();
+    buttonexec();
 });
 
 var FileTableInit = function () {
@@ -9,7 +10,7 @@ var FileTableInit = function () {
     //初始化Table
     oFileTableInit.Init = function () {
         $('#luk_service').bootstrapTable({
-            url: '/lukServer/lukServerMsg',         //请求后台的URL（*）
+            url: '/lukServer/lukServiceMsg',         //请求后台的URL（*）
             method: 'get',    //请求方式（*）
             toolbar: '#toolbar',                //工具按钮用哪个容器
             striped: true,                      //是否显示行间隔色
@@ -109,7 +110,7 @@ function buttonexec() {
                 data: {"data": JSON.stringify({"msg": luk_info, "state": "reset", "name": "luk"})},
                 success: function (data, status) {
                     toastr.success('矿机重启成功');
-                    $("#luk_service").bootstrapTable('refresh');
+                    // $("#luk_service").bootstrapTable('refresh');
                 },
                 error: function (data, status) {
                     toastr.error('执行失败');
@@ -130,7 +131,7 @@ function buttonexec() {
                 data: {"data": JSON.stringify({"msg": luk_info, "state": "off", "name": "luk"})},
                 success: function (data, status) {
                     toastr.success('矿机关闭成功');
-                    $("#luk_service").bootstrapTable('refresh');
+                    // $("#luk_service").bootstrapTable('refresh');
                 },
                 error: function (data, status) {
                     toastr.error('执行失败');
@@ -153,7 +154,7 @@ function buttonexec() {
                 data: {"data": JSON.stringify({"msg": luk_info, "state": "off", "name": "service"})},
                 success: function (data, status) {
                     toastr.success('程序关闭成功');
-                    $("#luk_service").bootstrapTable('refresh');
+                    // $("#luk_service").bootstrapTable('refresh');
                 },
                 error: function (data, status) {
                     toastr.error('执行失败');
@@ -176,7 +177,7 @@ function buttonexec() {
                 data: {"data": JSON.stringify({"msg": luk_info, "state": "reset", "name": "service"})},
                 success: function (data, status) {
                     toastr.success('程序重启成功');
-                    $("#luk_service").bootstrapTable('refresh');
+                    // $("#luk_service").bootstrapTable('refresh');
                 },
                 error: function (data, status) {
                     toastr.error('执行失败');
