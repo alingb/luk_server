@@ -18,9 +18,9 @@ from django.urls import reverse
 
 from lukMsg.models import LukInfo, LukUser
 
-# from .saltstack import SaltApi
-# salt_api = "https://127.0.0.1:8000/"
-# salt = SaltApi(salt_api)
+from .saltstack import SaltApi
+salt_api = "https://127.0.0.1:8000/"
+salt = SaltApi(salt_api)
 
 @login_required
 def lukTotalMsg(req):
@@ -85,8 +85,8 @@ def lukTotalMsg(req):
 def index(req):
     totalNum = LukInfo.objects.all().count()
     runNum = LukInfo.objects.filter(serverStat='True').count()
-    stopNum = LukInfo.objects.filter(serverStat='Flase').count()
-    offNum = LukInfo.objects.filter(mechineStat='Flase').count()
+    stopNum = LukInfo.objects.filter(serverStat='False').count()
+    offNum = LukInfo.objects.filter(mechineStat='False').count()
     return render(req, 'index.html', {'totalNum': totalNum, 'runNum': runNum,
                                       'stopNum': stopNum, 'offNum': offNum})
 
@@ -98,33 +98,10 @@ def lukUser(req):
 
 @login_required
 def lukService(req):
-    if req.method == "GET":
-        global searchName, searchStat
-        searchName = req.GET.get("name")
-        searchStat = req.GET.get("state")
-        return render(req, 'lukservice.html')
-    else:
-        limit = req.GET.get("limit")
-        offset = req.GET.get("offset")
-        if searchName == "serverStat":
-            host = LukInfo.objects.filter(serverStat=searchStat)
-        elif searchName == "mechineStat":
-            host = LukInfo.objects.filter(mechineStat=searchStat)
-        else:
-            host = LukInfo.objects.all()
-        lenth = host.count()
-        if not offset or not limit:
-            host = host
-        else:
-            offset = int(offset)
-            limit = int(limit)
-            host = host[offset:offset + limit]
-        data = []
-        for each in host:
-            data.append(model_to_dict(each))
-        return HttpResponse(json.dumps({"rows": data, "total": lenth}))
-
-
+    global searchName, searchStat
+    searchName = req.GET.get("name")
+    searchStat = req.GET.get("state")
+    return render(req, 'lukservice.html')
 
 
 @login_required
@@ -205,38 +182,34 @@ def lukServiceMsg(request):
 
 
 def lukAddMsg(req):
-    import time
     if req.method == 'POST':
-        luk_data = json.loads(req.body)
-        for data in luk_data:
-            if data. has_key("macAddr"):
-                macAddr = data['macAddr']
-                try:
-                    lukinfo = LukInfo.objects.get(macAddr=macAddr)
-                except Exception:
-                    lukinfo = LukInfo()
-                lukinfo.macAddr = data['macAddr']
-                lukinfo.mechineSensor = data['mechineSensor']
-                lukinfo.mechineStat = data['mechineStat']
-                lukinfo.serverStat = data['serverStat']
-                lukinfo.ipAddr = data['ipAddr']
-                lukinfo.runTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-                lukinfo.save()
-            else:
-                ipAddr = data["ipAddr"]
-                try:
-                    lukinfo = LukInfo.objects.get(ipAddr=ipAddr)
-                except Exception:
-                    lukinfo = LukInfo()
-                lukinfo.mechineSensor = data['mechineSensor']
-                lukinfo.mechineStat = data['mechineStat']
-                lukinfo.serverStat = data['serverStat']
-                lukinfo.ipAddr = data['ipAddr']
-                lukinfo.runTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-                lukinfo.save()
-        return HttpResponse('ok')
-    else:
-        return HttpResponse('off')
+        data = json.loads(req.body)
+        if data. has_key("macAddr"):
+            macAddr = data['macAddr']
+            try:
+                lukinfo = LukInfo.objects.get(macAddr=macAddr)
+            except Exception:
+                lukinfo = LukInfo()
+            lukinfo.macAddr = data['macAddr']
+            lukinfo.mechineSensor = data['mechineSensor']
+            lukinfo.mechineStat = data['mechineStat']
+            lukinfo.serverStat = data['serverStat']
+            lukinfo.ipAddr = data['ipAddr']
+            lukinfo.runTime = data['runTime']
+            lukinfo.save()
+        else:
+            ipAddr = data["ipAddr"]
+            try:
+                lukinfo = LukInfo.objects.get(ipAddr=ipAddr)
+            except Exception:
+                lukinfo = LukInfo()
+            lukinfo.mechineSensor = data['mechineSensor']
+            lukinfo.mechineStat = data['mechineStat']
+            lukinfo.serverStat = data['serverStat']
+            lukinfo.ipAddr = data['ipAddr']
+            lukinfo.runTime = data['runTime']
+            lukinfo.save()
+    return HttpResponse('ok')
 
 
 def lukAddSn(req):

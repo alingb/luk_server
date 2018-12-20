@@ -17,7 +17,7 @@
         <div class="small-box bg-green">
             <div class="inner">
                 <h3>{{ runNum }}</h3>
-                <p>运行矿机数量</p>
+                <p>运行程序数量</p>
             </div>
             <div class="icon">
                 <i class="ion ion-person"></i>
@@ -35,7 +35,7 @@
             <div class="icon">
                 <i class="ion ion-stop"></i>
             </div>
-            <a href="{% url "lukservice" %}?name=serverStat&state=Flase" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="{% url "lukservice" %}?name=serverStat&state=False" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <div class="col-lg-5 col-xs-8">
@@ -48,7 +48,7 @@
             <div class="icon">
                 <i class="ion ion-locked"></i>
             </div>
-            <a href="{% url "lukservice" %}?name=mechineStat&state=Flase" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="{% url "lukservice" %}?name=mechineStat&state=False" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
 {% endblock %}
