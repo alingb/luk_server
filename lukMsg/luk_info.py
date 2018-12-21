@@ -52,7 +52,7 @@ def get_address_mac():
 
 def get_luk_sensor():
     sensor = command_exec("sensors")
-    temp_compile = re.compile(r"Physical id 0:\s+(.*)?\s\(high.*", re.M)
+    temp_compile = re.compile(r"Physical id 0:\s+\+(\d+(\.\d+)?).*?\s\(high.*", re.M)
     temp = temp_compile.search(sensor)
     temp = searchInfo(temp)
     return {"mechineSensor": temp}
