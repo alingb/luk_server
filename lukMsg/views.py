@@ -5,6 +5,7 @@ import json
 import re
 import time
 
+import datetime
 import requests
 from bs4 import BeautifulSoup
 from django.contrib.auth import authenticate, login, logout
@@ -80,6 +81,13 @@ def lukTotalMsg(req):
 
 @login_required
 def index(req):
+    now_time = datetime.datetime.now()
+    stop_time = now_time - datetime.timedelta(minutes=5)
+    try:
+        lukinfo = LukInfo.objects.filter(runTime__lt=stop_time)
+        lukinfo.update(mechineStat='False', serverStat='False')
+    except Exception:
+        pass
     totalNum = LukInfo.objects.all().count()
     runNum = LukInfo.objects.filter(serverStat='True').count()
     stopNum = LukInfo.objects.filter(serverStat='False').count()
@@ -95,6 +103,13 @@ def lukUser(req):
 
 @login_required
 def lukService(req):
+    now_time = datetime.datetime.now()
+    stop_time = now_time - datetime.timedelta(minutes=5)
+    try:
+        lukinfo = LukInfo.objects.filter(runTime__lt=stop_time)
+        lukinfo.update(mechineStat='False', serverStat='False')
+    except Exception:
+        pass
     global searchName, searchStat
     searchName = req.GET.get("name")
     searchStat = req.GET.get("state")

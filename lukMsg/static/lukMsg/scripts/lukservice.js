@@ -39,10 +39,13 @@ var FileTableInit = function () {
             rowStyle: function (row, index) {
                 //这里有5个取值代表5中颜色['active', 'success', 'info', 'warning', 'danger'];
                 var strclass = "";
-                if (row.serverStat == "True") {
+                if (row.serverStat === "True") {
                     strclass = 'success';//还有一个active
                 }
-                else if (row.serverStat == "Flase") {
+                else if (row.mechineStat === "False") {
+                    strclass = 'danger';
+                }
+                else if (row.serverStat === "False") {
                     strclass = 'warning';
                 }
                 else {

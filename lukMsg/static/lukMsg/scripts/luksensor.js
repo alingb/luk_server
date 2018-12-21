@@ -38,8 +38,11 @@ var FileTableInit = function () {
             rowStyle: function (row, index) {
                 //这里有5个取值代表5中颜色['active', 'success', 'info', 'warning', 'danger'];
                 var strclass = "";
-                if (row.mechineSensor <= 75) {
+                if (row.mechineSensor <= 50) {
                     strclass = 'success';//还有一个active
+                }
+                else if ( row.mechineSensor <= 70) {
+                    strclass = 'info';
                 }
                 else if (row.mechineSensor >= 75) {
                     strclass = 'warning';
